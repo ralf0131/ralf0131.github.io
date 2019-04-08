@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>通过Maven检查三方库依赖的许可 - Test - A super concise theme for Hugo</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Huxing Zhang" /><meta name="description" content="背景 最近Dubbo的依赖的某三方库发现使用了LGPL的依赖，由于Dubbo在Apache基金会里面进行孵化，需要确保所有的三方依赖都和Apa" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.54.0 with even 4.0.0" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/third-party-dependency-check/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="通过Maven检查三方库依赖的许可" />
+<meta property="og:description" content="背景 最近Dubbo的依赖的某三方库发现使用了LGPL的依赖，由于Dubbo在Apache基金会里面进行孵化，需要确保所有的三方依赖都和Apa" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/third-party-dependency-check/" />
+<meta property="article:published_time" content="2019-04-07T17:18:08&#43;08:00"/>
+<meta property="article:modified_time" content="2019-04-07T17:18:08&#43;08:00"/>
+
+<meta itemprop="name" content="通过Maven检查三方库依赖的许可">
+<meta itemprop="description" content="背景 最近Dubbo的依赖的某三方库发现使用了LGPL的依赖，由于Dubbo在Apache基金会里面进行孵化，需要确保所有的三方依赖都和Apa">
+
+
+<meta itemprop="datePublished" content="2019-04-07T17:18:08&#43;08:00" />
+<meta itemprop="dateModified" content="2019-04-07T17:18:08&#43;08:00" />
+<meta itemprop="wordCount" content="1010">
+
+
+
+<meta itemprop="keywords" content="license,maven," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="通过Maven检查三方库依赖的许可"/>
+<meta name="twitter:description" content="背景 最近Dubbo的依赖的某三方库发现使用了LGPL的依赖，由于Dubbo在Apache基金会里面进行孵化，需要确保所有的三方依赖都和Apa"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Even</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Even</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">通过Maven检查三方库依赖的许可</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-04-07 </span>
+        <div class="post-category">
+            <a href="/categories/java/"> Java </a>
+            </div>
+          <span class="more-meta"> 1010 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        
+      </div>
+    </header>
+
+    
+    <div class="post-content">
+      
+
+<h3 id="背景">背景</h3>
+
+<p>最近Dubbo的依赖的某三方库发现使用了LGPL的依赖，由于Dubbo在Apache基金会里面进行孵化，需要确保所有的三方依赖都和Apache许可证进行兼容。也就是说任何LGPL，GPL许可的三方依赖理论上都不能被纳入Dubbo的依赖，无论是直接依赖还是传递依赖。</p>
+
+<h3 id="解决方案">解决方案</h3>
+
+<p>为了解决这个问题，maven的license插件提供了许可证查询机制，可以采用了如下命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">mvn license:add-third-party -Dlicense.useMissingFile</pre></td></tr></table>
+</div>
+</div>
+<p>上述命令会自动扫描所有模块当中的依赖，包括直接和传递依赖，输出到每个模块的<code>target/generated-sources/license/THIRD-PARTY.txt</code>文件下，内容如下</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">Lists of 114 third-party dependencies.
+     (ASF 2.0) Code Generation Library (cglib:cglib-nodep:2.2 - http://cglib.sourceforge.net/)
+     (Eclipse Public License - v 1.0) (GNU Lesser General Public License) Logback Classic Module (ch.qos.logback:logback-classic:1.2.2 - http://logback.qos.ch/logback-classic)
+     (Eclipse Public License - v 1.0) (GNU Lesser General Public License) Logback Core Module (ch.qos.logback:logback-core:1.2.2 - http://logback.qos.ch/logback-core)
+     (Apache 2) fastjson (com.alibaba:fastjson:1.2.46 - https://github.com/alibaba/fastjson)
+     (Apache License, Version 2.0) Hessian Lite(Alibaba embed version) (com.alibaba:hessian-lite:3.2.5 - https://github.com/dubbo/hessian-lite)
+     (Apache License, Version 2.0) metrics-common (com.alibaba.middleware:metrics-common:2.0.1 - https://github.com/dubbo/metrics/metrics-common)
+     (Apache License, Version 2.0) metrics-core-api (com.alibaba.middleware:metrics-core-api:2.0.1 - https://github.com/dubbo/metrics/metrics-core-api)
+     (Apache License, Version 2.0) metrics-core-impl (com.alibaba.middleware:metrics-core-impl:2.0.1 - https://github.com/dubbo/metrics/metrics-core-impl)
+     (Apache License, Version 2.0) nacos-api 1.0.0-RC3 (com.alibaba.nacos:nacos-api:1.0.0-RC3 - http://maven.apache.org)
+     (Apache License, Version 2.0) nacos-client 1.0.0-RC3 (com.alibaba.nacos:nacos-client:1.0.0-RC3 - https://github.com/alibaba/nacos)
+     (Apache License, Version 2.0) nacos-common 1.0.0-RC3 (com.alibaba.nacos:nacos-common:1.0.0-RC3 - http://maven.apache.org)
+     (The Apache Software License, Version 2.0) java-util (com.cedarsoftware:java-util:1.9.0 - https://github.com/jdereg/java-util)
+     (The Apache Software License, Version 2.0) json-io (com.cedarsoftware:json-io:2.5.1 - https://github.com/jdereg/json-io)
+     ...</pre></td></tr></table>
+</div>
+</div>
+<p>可以看到有一些依赖是暴露了双协议或者多协议，这种情况下可以选择兼容度最高的一种协议。例如<code>logback</code>作为一个典型的例子，就是暴露的是EPL+LGPL双协议，而EPL属于在Apache基金金下的<code>Category B</code>，即允许二进制形式的依赖，所以<code>logback</code>是允许作为三方依赖出现的。</p>
+
+<p>为了排除这些双协议造成的干扰，采用如下命令进行过滤后，只剩下2条记录：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">find . -name THIRD-PARTY.txt | xargs grep GPL | grep -v Apache | grep
+-v MIT | grep -v CDDL
+./dubbo-registry/dubbo-registry-nacos/target/generated-sources/license/THIRD-PARTY.txt:
+(GNU Lesser General Public License (LGPL), Version 2.1) Jackson
+(org.codehaus.jackson:jackson-core-lgpl:1.9.6 -
+http://jackson.codehaus.org)
+./dubbo-registry/dubbo-registry-nacos/target/generated-sources/license/THIRD-PARTY.txt:
+(GNU Lesser General Public License (LGPL), Version 2.1) Data
+Mapper for Jackson (org.codehaus.jackson:jackson-mapper-lgpl:1.9.6 -
+http://jackson.codehaus.org)</pre></td></tr></table>
+</div>
+</div>
+<p>上述的依赖需要进行清理，nacos-client-1.0.0-RC3开始修复了这个问题。</p>
+
+<p>但是，这里有一个坑，就是三方依赖的<code>optional</code>依赖没法通过上述命令检测出来，例如nacos-client的如下依赖也是LGPL，用mvn license插件无法检查出来。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>com.github.spotbugs<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>spotbugs-annotations<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;optional&gt;</span>true<span class="nt">&lt;/optional&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>事实上maven license插件提供了一个<code>&lt;includeOptional&gt;</code><a href="https://www.mojohaus.org/license-maven-plugin/add-third-party-mojo.html">选项</a>，但是实际上对于三方依赖的optional依赖却不生效，原因待确定。个人推测如果在nacos-client下运行上述命令，应该是可以检查出来的。</p>
+
+<h3 id="总结">总结</h3>
+
+<p>后续Dubbo每新增一个三方依赖，都需要检查License的兼容情况，尤其是三方依赖的optional依赖需要仔细检查，目前没有特别好的办法，如果有想到好办法欢迎留言。</p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Huxing Zhang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-04-07
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">License</span>
+    <span class="item-content"><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/license/">license</a>
+          <a href="/tags/maven/">maven</a>
+          </div>
+      <nav class="post-nav">
+        
+        
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:huxing.zhang%20AT%20gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://twitter.com/ralf0131" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="https://www.facebook.com/huxing.zhang" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://www.linkedin.com/in/huxing-zhang" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="https://github.com/ralf0131" class="iconfont icon-github" title="github"></a>
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" href="https://gohugo.io">Hugo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Huxing Zhang</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

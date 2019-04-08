@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Java on Test - A super concise theme for Hugo</title>
+    <link>http://localhost:1313/categories/java/</link>
+    <description>Recent content in Java on Test - A super concise theme for Hugo</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 07 Apr 2019 17:18:08 +0800</lastBuildDate>
+    
+	<atom:link href="http://localhost:1313/categories/java/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>通过Maven检查三方库依赖的许可</title>
+      <link>http://localhost:1313/post/third-party-dependency-check/</link>
+      <pubDate>Sun, 07 Apr 2019 17:18:08 +0800</pubDate>
+      
+      <guid>http://localhost:1313/post/third-party-dependency-check/</guid>
+      <description>背景 最近Dubbo的依赖的某三方库发现使用了LGPL的依赖，由于Dubbo在Apache基金会里面进行孵化，需要确保所有的三方依赖都和Apa</description>
+    </item>
+    
+  </channel>
+</rss>
