@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<?xml-stylesheet type="text/xsl" href="http://localhost:1313/sitemap.xsl"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
     <loc>http://localhost:1313/about/</loc>
     <lastmod>2019-04-07T17:08:13+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>http://localhost:1313/post/from-0-to-member/</loc>
+    <lastmod>2019-05-16T22:35:47+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -31,7 +38,7 @@
   
   <url>
     <loc>http://localhost:1313/post/</loc>
-    <lastmod>2019-04-07T17:18:08+08:00</lastmod>
+    <lastmod>2019-05-16T22:35:47+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
@@ -59,6 +66,13 @@
   <url>
     <loc>http://localhost:1313/tags/maven/</loc>
     <lastmod>2019-04-07T17:18:08+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://localhost:1313/tags/opensource/</loc>
+    <lastmod>2019-05-16T22:35:47+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0</priority>
   </url>
